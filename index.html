@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Favorite Person</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --glow-color: rgba(173, 216, 230, 0.8);
+            --accent-pink: #ffb4dc;
+            /* Defined transitions for smoothness */
+            --transition-speed: 2.5s;
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            /* Deep abyss blue background to prevent white flashes while GIFs load */
+            background-color: #050a15;
+            font-family: 'Quicksand', sans-serif;
+            overflow: hidden; /* Prevents whole-page scrolling */
+            color: white;
+        }
+
+        /* --- Background GIF Layers --- */
+        .scene {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* We use opacity and z-index to stack and crossfade the scenes */
+            opacity: 0;
+            visibility: hidden;
+            z-index: 1;
+            transition: opacity var(--transition-speed) var(--ease), visibility var(--transition-speed) var(--ease);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        /* The active scene is visible and on top */
+        .active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 10;
+        }
+
+        /* GIF Background Wrapper to maintain ratio and center */
+        .gif-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -1; /* Puts the GIF behind the content */
+            /* Crucial hardware acceleration to prevent stuttering with multiple animated GIFs */
+            will-change: transform;
+            transform: translateZ(0); 
+        }
+
+        /* Scene 1: Calm, Ethereal Moonlit Ocean (matches your original blue vibe) */
+        #scene1 .gif-bg { background-image: linear-gradient(rgba(0,10,30,0.5), rgba(0,10,30,0.5)), url('bg1.gif'); }
+        /* Scene 2: Deep Water with Soft Sunbeams (matches the second deep connection vibe) */
+        #scene2 .gif-bg { background-image: linear-gradient(rgba(0,10,30,0.6), rgba(0,10,30,0.6)), url('bg2.gif'); }
+        /* Scene 3: Bright, Gentle Sea Corals (matches the third cute axolotl vibe) */
+        #scene3 .gif-bg { background-image: linear-gradient(rgba(0,10,30,0.3), rgba(0,10,30,0.3)), url('bg3.gif'); }
+
+        /* --- UI Elements --- */
+        .content-box {
+            position: relative;
+            padding: 2rem;
+            max-width: 80%;
+            z-index: 20;
+            opacity: 0;
+            /* Delayed fade-in so the scene is visible first */
+            animation: fadeIn 1.5s var(--ease) forwards;
+            animation-delay: calc(var(--transition-speed) * 0.5);
+        }
+
+        /* --- SCENE 1: Intro --- */
+        #scene1 .content-box {
+            position: absolute;
+            bottom: 20%;
+            width: 100%;
+        }
+
+        .intro-text {
+            font-size: 1.4rem;
+            letter-spacing: 2px;
+            font-weight: 300;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+            /* Subtle breathing animation */
+            animation: float 4s ease-in-out infinite;
+            margin-bottom: 2rem;
+        }
+
+        /* --- SCENE 2: The Letter --- */
+        /* Immersive frosted glass look with a big scroll area */
+        .letter-container {
+            width: 85%;
+            max-width: 800px;
+            height: 65vh; /* 65% of screen height */
+            background: rgba(10, 25, 50, 0.4);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6), inset 0 0 30px rgba(255,255,255,0.05);
+            padding: 40px 50px;
+            overflow-y: auto; /* Activates scrolling for the letter */
+            text-align: left; 
+            margin-bottom: 30px;
+            animation: fadeInUp 2s var(--ease) forwards;
+            animation-delay: 1s;
+        }
+
+        /* Elegant Custom Scrollbar */
+        .letter-container::-webkit-scrollbar { width: 8px; }
+        .letter-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .letter-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 10px;
+        }
+        .letter-container::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.5); }
+
+        .letter-content {
+            font-family: 'Quicksand', sans-serif;
+            color: #e6f4ff;
+            font-size: 1.15rem;
+            line-height: 2.2; /* Generous spacing for reading */
+            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            font-weight: 300;
+        }
+
+        /* Special quote formatting */
+        .letter-content blockquote {
+            border-left: 2px solid rgba(255, 180, 220, 0.6);
+            padding-left: 20px;
+            margin-left: 0;
+            font-style: italic;
+            color: #b4e0ff;
+        }
+
+        /* --- SCENE 3: Finale --- */
+        /* Gradient shifting cursive text */
+        .final-message {
+            font-family: 'Dancing Script', cursive;
+            font-size: clamp(4rem, 10vw, 8rem); /* Responsive text size */
+            background: linear-gradient(45deg, #fff, var(--accent-pink), #b4e0ff, #fff);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            /* Dynamic glowing and shifting animations */
+            animation: gradientShift 8s infinite, glowPulse 3s infinite alternate;
+            filter: drop-shadow(0 0 15px rgba(255,180,220,0.4));
+        }
+
+        /* --- Interactive Buttons --- */
+        .btn-proceed {
+            margin-top: 1rem;
+            background: none;
+            /* Defined border with initial blur effect */
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+            padding: 12px 40px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+            z-index: 30;
+        }
+
+        .btn-proceed:hover {
+            background: rgba(255,255,255,1);
+            color: #000;
+            box-shadow: 0 0 20px rgba(255,255,255,0.4);
+            transform: translateY(-3px);
+        }
+
+        /* Click/Press animation */
+        .btn-proceed:active {
+            transform: scale(0.95);
+            box-shadow: 0 0 30px rgba(255,180,220,0.6);
+        }
+
+        /* --- Animations --- */
+        @keyframes fadeIn { to { opacity: 1; } }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes glowPulse {
+            from { filter: drop-shadow(0 0 10px rgba(255,255,255,0.2)); }
+            to { filter: drop-shadow(0 0 25px rgba(255,180,220,0.7)); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="scene1" class="scene active">
+        <div class="gif-bg"></div>
+        <div class="content-box">
+            <p class="intro-text">I wanted to share a piece of my mind with you...</p>
+            <button class="btn-proceed" onclick="goTo('scene1', 'scene2', this)">Dive In</button>
+        </div>
+    </div>
+
+    <div id="scene2" class="scene">
+        <div class="gif-bg"></div>
+        <div class="content-box">
+            
+            <div class="letter-container">
+                <div class="letter-content">
+                    Mayabinii Maya,<br><br>
+                            I am deeply sorry for what happened last night, and also for the other time when I lost control of my emotions and spoke harshly. I am genuinely sorry. In those moments of anger, I said things that disturbed the peace we had built together. I know my words must have hurt you more than either of us could fully imagine, and that realization weighs heavily on my heart.
+
+        Lately I realize I have been behaving strangely almost as if I were testing the limits of your patience. I have been distant, nonchalant, careless with my words, and sometimes silent when I should have spoken with reassurance. I cannot even give you a proper reason for why I acted this way. What pains me the most is that none of it came from anger toward you. Never. Not even for a moment. If anything, it came from my own confusion and inability to express what was happening inside me.
+
+        You deserve clarity, and reassurance, not silence, not coldness, and certainly not hurtful words. Yet you have continued to stand beside me with patience and kindness. I feel incredibly blessed that you have chosen me again and again, even when I failed to show you the goodness you deserve. Knowing that I have hurt you despite your love fills me with shame and regret.<br><br>
+
+        Please know this, I never intend to hurt you. When I withdrew or stayed silent, it was not because I did not care. Sometimes I simply did not have the strength to argue or explain myself properly. I should have held your hands, looked into your eyes, and reassured you with my presence instead of letting distance grow between us (Like it did last few times). For failing to do that, I am truly sorry.
+
+        I want you to stay even in the moments when you feel like leaving from our texts. Not because I take you lightly, but because your presence is one of the most precious things in my life. You are my calm after the storm, my safe place when the world becomes heavy. You are the quiet light that guides me when everything else feels uncertain.
+
+        You are my crock of gold at the rainbow’s end, the rare treasure that makes every storm worth enduring. Loving you feels like discovering sunlight after long rain, like finding warmth in the coldest winter, you are my apricity. In your presence, the ordinary moments of life become beautiful, and the future feels brighter simply because you are in it.<br><br>
+
+        I promise to try harder to be gentler with my words and more open with my heart. I want to learn how to love you in the way you deserve, with patience, honesty and care. You mean far more to me than my anything.
+
+        Please forgive me this time. I am sorry for the pain I caused, and I truly hope I can make things right again. What we have is something I cherish constantly forevermore, and I never want my mistakes to dim even a bit the love we share.<br><br>
+
+        Solely yours,<br>
+        Tasii~~<br><br>
+
+        <blockquote>"Your love is high like the tide<br>
+Come and pull me in<br>
+I wanna get low in Your glory<br>
+See places You've been<br>
+Your words are sweeter than honey<br>
+They nourish my soul<br>
+Oh, just to know You is to love You<br>
+Come and make me whole<br>
+
+Take me to the river<br>
+I will swim, I will swim"</blockquote><br><br>
+
+
+                </div>
+            </div>
+
+            <button class="btn-proceed" onclick="goTo('scene2', 'scene3', this)">Keep Going</button>
+        </div>
+    </div>
+
+    <div id="scene3" class="scene">
+        <div class="gif-bg"></div>
+        <div class="content-box">
+            <h1 class="final-message">I love you</h1>
+        </div>
+    </div>
+
+    <script>
+        // Smooth cross-fading function
+        function goTo(currentId, nextId, button) {
+            // Instantly remove the button so it can't be clicked twice during transition
+            button.style.pointerEvents = 'none';
+            button.style.opacity = '0';
+
+            const current = document.getElementById(currentId);
+            const next = document.getElementById(nextId);
+
+            // Cross-fading is achieved by simply swapping the active class.
+            // Scene 1 fades out as Scene 2 fades in over 2.5 seconds.
+            current.classList.remove('active');
+            next.classList.add('active');
+        }
+    </script>
+</body>
+</html>
